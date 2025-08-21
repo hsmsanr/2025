@@ -1,2 +1,2 @@
 import streamlit as st
-st.title('듀')
+st.title('텍스틎')
