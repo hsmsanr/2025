@@ -67,4 +67,3 @@ fig_top1.update_layout(yaxis=dict(title="점수", showgrid=False))
 st.plotly_chart(fig_top1, use_container_width=True)
 
 st.dataframe(top1[["분야", "항목", "종합점수"]])
-
