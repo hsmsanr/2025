@@ -83,10 +83,5 @@ else:
                     </div>
                     """, unsafe_allow_html=True
                 )
-            st.bar_chart(df_cat.set_index("항목")["종합점수"])
-    
-    # ------------------ 각 분야별 1위만 모아보기 ------------------
-    st.subheader("🏆 각 분야별 1위 모음")
-    top1 = df.sort_values("종합점수", ascending=False).groupby("분야").head(1)
-    for i, row in top1.iterrows():
-        st.markdown(f"**{row['분야']} 1위 → {row['항목']} ✨ ({row['설명']})**")
+            # ------------------ 막대그래프 작게 표시 ------------------
+            st.bar_chart(df_cat.set_index("항목")["종합점수"], height=200)
