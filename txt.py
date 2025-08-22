@@ -76,7 +76,7 @@ st.markdown(f"**연령대:** {age_group}, **환경:** {environment}, **관심사
 if df.empty:
     st.warning("해당 조건에 맞는 트렌드가 없습니다. 관심사나 심정을 조정해보세요!")
 else:
-    # 점수 순으로 상위 5개만 선택
+    # 총 추천 5개만 표시
     df_top = df.sort_values("종합점수", ascending=False).head(5)
     
     for i, row in df_top.iterrows():
@@ -90,5 +90,5 @@ else:
             """, unsafe_allow_html=True
         )
     
-    # 막대그래프 (작게 표시)
+    # 막대그래프 (세로, 작게)
     st.bar_chart(df_top.set_index("항목")["종합점수"], height=200)
