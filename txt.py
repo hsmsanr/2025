@@ -66,8 +66,3 @@ st.dataframe(df_now)
 st.subheader("📋 시간별 검색량 데이터 (년도별)")
 st.dataframe(df_year)
 
-
-# ------------------ 데이터 테이블 ------------------
-st.subheader("📋 원본 데이터")
-st.dataframe(df)
-
