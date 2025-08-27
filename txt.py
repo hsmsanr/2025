@@ -103,3 +103,26 @@ else:
         )
 
     st.bar_chart(result.set_index("항목")["종합점수"])
+
+# ------------------ 결과 ------------------
+st.subheader("🎯 맞춤형 트렌드 TOP5")
+
+if filtered_df.empty:
+    st.warning("⚠️ 조건에 맞는 트렌드가 없어요! 선택지를 바꿔보세요.")
+else:
+    result = filtered_df.sort_values("종합점수", ascending=False).head(5)
+
+    for i, row in result.iterrows():
+        rank = result.index.get_loc(i) + 1
+        st.markdown(
+            f"""
+            <div style="background-color:#f9f9f9; padding:12px; margin:6px; border-radius:12px; 
+                        box-shadow:2px 2px 6px rgba(0,0,0,0.1); margin-bottom:10px;">
+                <h4>🏅 {rank}위: <b>{row['항목']}</b> ({row['종합점수']}점)</h4>
+                <p style="color:#555;">{row['설명']}</p>
+            </div>
+            """, unsafe_allow_html=True
+        )
+
+    # 바 차트 (항목 이름 기준으로 출력)
+    st.bar_chart(result.set_index("항목")["종합점수"])
