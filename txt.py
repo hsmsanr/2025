@@ -51,29 +51,55 @@ for cat, items in categories.items():
         all_data.append([cat, item, desc, 종합점수])
 df = pd.DataFrame(all_data, columns=["분야","항목","설명","종합점수"])
 
-# ------------------ 사용자 정보 입력 ------------------
+# ------------------ 입력 UI ------------------
 st.title("✨ 맞춤형 요즘 뜨는 트렌드 분석")
-st.markdown("**선택지: 선택하세요 ✨**")
 
-age_group = st.selectbox("연령대", ["10대", "20대", "30대", "40대 이상"])
-environment = st.selectbox("주변 환경", ["학교", "직장", "도시", "시골"])
-interest = st.selectbox("관심사", ["운동", "음악", "게임", "여행", "패션"])
-mood = st.selectbox("현재 심정", ["행복", "지침", "설렘", "우울", "도전"])
+st.markdown("아래 정보를 입력하면, 당신에게 딱 맞는 **최신 트렌드 TOP5**를 보여드려요! 🚀")
+
+col1, col2 = st.columns(2)
+with col1:
+    age = st.selectbox("연령대 (선택지: 선택하세요 ✨)", ["선택하세요", "10대", "20대", "30대", "40대 이상"])
+    env = st.selectbox("주변환경 (선택지: 선택하세요 ✨)", ["선택하세요", "도시", "교외", "학교", "직장"])
+with col2:
+    interest = st.selectbox("관심사 (선택지: 선택하세요 ✨)", ["선택하세요", "음식", "패션", "밈", "인물", "기타"])
+    mood = st.selectbox("현재 심정 (선택지: 선택하세요 ✨)", ["선택하세요", "즐거움", "피곤함", "힐링 필요", "자기계발", "유머 찾는 중"])
 
 # ------------------ 필터링 ------------------
-if age_group and environment and interest and mood:
-    filtered = df.sample(5)  # 단순 무작위 5개 추천
+filtered_df = df.copy()
 
-    st.subheader("🔥 당신에게 맞는 TOP 트렌드 5")
-    for i, row in filtered.iterrows():
+if age != "선택하세요":
+    if age == "10대":  
+        filtered_df = filtered_df[~filtered_df["항목"].isin(["하이볼","헬스 보충제"])]
+    elif age == "40대 이상":
+        filtered_df = filtered_df[~filtered_df["항목"].isin(["AI 패러디","버킷햇"])]
+
+if interest != "선택하세요":
+    filtered_df = filtered_df[filtered_df["분야"].str.contains(interest[0])]
+
+if mood != "선택하세요":
+    if mood == "유머 찾는 중":
+        filtered_df = filtered_df[filtered_df["분야"]=="🤣 밈"]
+    elif mood == "힐링 필요":
+        filtered_df = filtered_df[filtered_df["분야"].isin(["🍔 음식","💡 기타"])]
+
+# ------------------ 결과 ------------------
+st.subheader("🎯 맞춤형 트렌드 TOP5")
+
+if filtered_df.empty:
+    st.warning("⚠️ 조건에 맞는 트렌드가 없어요! 선택지를 바꿔보세요.")
+else:
+    result = filtered_df.sort_values("종합점수", ascending=False).head(5)
+
+    for i, row in result.iterrows():
+        rank = result.index.get_loc(i) + 1
         st.markdown(
             f"""
             <div style="background-color:#f9f9f9; padding:12px; margin:6px; border-radius:12px; 
-                        box-shadow:2px 2px 6px rgba(0,0,0,0.1);">
-                <h4>✨ <b>{row['항목']}</b> ({row['종합점수']}점)</h4>
+                        box-shadow:2px 2px 6px rgba(0,0,0,0.1); margin-bottom:10px;">
+                <h4>🏅 {rank}위: <b>{row['항목']}</b> ({row['종합점수']}점)</h4>
                 <p style="color:#555;">{row['설명']}</p>
             </div>
             """, unsafe_allow_html=True
         )
 
-    st.bar_chart(filtered.set_index("항목")["종합점수"])
+    st.bar_chart(result.set_index("항목")["종합점수"])
