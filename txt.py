@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import random
+import altair as alt
 
 st.set_page_config(page_title="트렌드 추천 앱", page_icon="🔥", layout="centered")
 
@@ -16,7 +17,7 @@ interest = st.selectbox("관심사 (선택하세요)", ["선택하세요", "패�
 mood = st.selectbox("현재 심정 (선택하세요)", ["선택하세요", "힐링 필요", "스트레스 해소", "재미 찾는 중", "공부 집중"])
 
 # -------------------------------
-# 트렌드 데이터베이스 (예시)
+# 트렌드 데이터베이스
 # -------------------------------
 trend_data = {
     "패션": [
@@ -57,29 +58,38 @@ trend_data = {
 }
 
 # -------------------------------
-# 입력 조건에 맞는 트렌드 선택
+# 입력 조건에 맞는 트렌드 추천
 # -------------------------------
 if age_group != "선택하세요" and environment != "선택하세요" and interest != "선택하세요" and mood != "선택하세요":
     st.subheader("📊 당신을 위한 트렌드 추천")
 
     items = trend_data.get(interest, [])
-
-    # 입력값 무관하게 최소 5개 출력 보장
     final_items = random.sample(items, k=min(5, len(items)))
 
-    # 표 형식 출력
     for idx, item in enumerate(final_items, 1):
         st.markdown(f"**{idx}. {item['name']}** - {item['desc']}")
 
     # -------------------------------
-    # 막대그래프 (세로, 작게, 예쁘게)
+    # Altair 막대그래프 (색상 다양 + 작게)
     # -------------------------------
     df = pd.DataFrame({
         "항목": [i["name"] for i in final_items],
         "인기도 점수": [len(final_items) - idx for idx, _ in enumerate(final_items)]
     })
 
-    st.bar_chart(df, x="항목", y="인기도 점수", use_container_width=True)
+    chart = (
+        alt.Chart(df)
+        .mark_bar(cornerRadiusTopLeft=6, cornerRadiusTopRight=6)
+        .encode(
+            x=alt.X("항목:N", sort="-y", axis=alt.Axis(labelAngle=0)),
+            y=alt.Y("인기도 점수:Q"),
+            color=alt.Color("항목:N", scale=alt.Scale(scheme="set2")),  # 색상 다양
+            tooltip=["항목", "인기도 점수"]
+        )
+        .properties(width=400, height=250)  # 크기 작게
+    )
+
+    st.altair_chart(chart, use_container_width=True)
 
 else:
     st.info("⬆️ 모든 항목을 선택하면 트렌드 결과가 나타납니다.")
