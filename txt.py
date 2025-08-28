@@ -1,78 +1,92 @@
 import streamlit as st
+import matplotlib.pyplot as plt
 
-# -----------------------
-# 샘플 트렌드 데이터
-# -----------------------
+# ---------------------------
+# 트렌드 데이터 예시
+# ---------------------------
 trends = {
-    "인물": [
-        {"name": "아이유", "desc": "음악과 드라마에서 활약하며 꾸준한 인기 유지", "age": ["10대","20대","30대"], "env": ["도시","학교","교외"], "interest": ["음악","연예인"]},
-        {"name": "손흥민", "desc": "프리미어리그 활약으로 전世대적 인기", "age": ["10대","20대","30대","40대"], "env": ["도시","교외"], "interest": ["스포츠"]},
-        {"name": "뉴진스", "desc": "신선한 음악과 스타일로 Z세대 아이콘", "age": ["10대","20대"], "env": ["학교","도시"], "interest": ["음악","패션"]},
-        {"name": "이강인", "desc": "축구 스타로 급부상", "age": ["10대","20대"], "env": ["도시","학교"], "interest": ["스포츠"]},
-        {"name": "유재석", "desc": "국민MC로 꾸준한 예능계 인기", "age": ["20대","30대","40대"], "env": ["도시","교외"], "interest": ["예능"]}
-    ],
-    "음식": [
-        {"name": "마라탕", "desc": "중독성 강한 맛으로 젊은 층 인기", "age": ["10대","20대"], "env": ["도시","학교"], "interest": ["음식"]},
-        {"name": "크로플", "desc": "카페 디저트로 SNS 인기", "age": ["10대","20대","30대"], "env": ["도시","학교"], "interest": ["음식"]},
-        {"name": "떡볶이", "desc": "대한민국 대표 길거리 음식", "age": ["10대","20대","30대"], "env": ["학교","도시"], "interest": ["음식"]},
-        {"name": "샐러드", "desc": "건강식으로 MZ세대 관심 증가", "age": ["20대","30대"], "env": ["도시","교외"], "interest": ["음식","건강"]},
-        {"name": "삼겹살", "desc": "국민 고기 메뉴, 전世대적 인기", "age": ["10대","20대","30대","40대"], "env": ["도시","교외","학교"], "interest": ["음식"]}
-    ],
-    "패션": [
-        {"name": "크록스", "desc": "편리함과 꾸안꾸 패션으로 자리잡음", "age": ["10대","20대"], "env": ["학교","도시"], "interest": ["패션"]},
-        {"name": "와이드팬츠", "desc": "힙한 분위기로 10대~20대 유행", "age": ["10대","20대"], "env": ["도시","학교"], "interest": ["패션"]},
-        {"name": "뉴발란스 운동화", "desc": "편안함과 레트로 감성으로 인기", "age": ["10대","20대","30대"], "env": ["도시","교외"], "interest": ["패션"]},
-        {"name": "트레이닝 셋업", "desc": "편한 스타일을 중시하는 꾸안꾸 트렌드", "age": ["10대","20대","30대"], "env": ["학교","도시"], "interest": ["패션"]},
-        {"name": "야구 모자", "desc": "데일리룩 필수 아이템", "age": ["10대","20대","30대"], "env": ["도시","학교"], "interest": ["패션"]}
-    ],
-    "밈": [
-        {"name": "진또배기", "desc": "흥겨운 멜로디와 밈으로 급부상", "age": ["10대","20대"], "env": ["학교","도시"], "interest": ["밈","음악"]},
-        {"name": "오마에와 모 신데이루", "desc": "애니 대사로 유행", "age": ["10대","20대"], "env": ["학교","도시"], "interest": ["밈"]},
-        {"name": "킹받네", "desc": "신조어 밈으로 널리 사용", "age": ["10대","20대"], "env": ["학교","도시"], "interest": ["밈"]},
-        {"name": "짤랑이 짤", "desc": "커뮤니티 중심으로 확산", "age": ["10대","20대","30대"], "env": ["도시","학교"], "interest": ["밈"]},
-        {"name": "이게 나라냐", "desc": "풍자와 밈으로 쓰임", "age": ["20대","30대"], "env": ["도시","교외"], "interest": ["밈"]}
-    ]
+    "10대": {
+        "패션": [
+            {"이름": "크록스", "설명": "편리함과 꾸안꾸 패션으로 자리잡음"},
+            {"이름": "카고바지", "설명": "힙하고 편안한 스타일로 인기를 얻음"},
+            {"이름": "뉴진스 스타일", "설명": "아이돌 패션이 유행을 선도"},
+            {"이름": "와이드 팬츠", "설명": "편안함과 트렌디함을 동시에 추구"},
+            {"이름": "크롭티", "설명": "여름철 패션 아이템으로 자리매김"}
+        ],
+        "음식": [
+            {"이름": "마라탕", "설명": "중국식 얼얼한 매운맛으로 인기"},
+            {"이름": "분식 배달", "설명": "간편하면서 가성비 좋은 한 끼"},
+            {"이름": "대왕 돈가스", "설명": "인스타 인증샷 음식으로 인기"},
+            {"이름": "빙수", "설명": "여름철 대표 디저트로 부상"},
+            {"이름": "떡볶이 퓨전", "설명": "이색 조합으로 SNS에서 화제"}
+        ],
+        "밈/유행어": [
+            {"이름": "진또배기", "설명": "밈으로 퍼지며 다양한 패러디 유행"},
+            {"이름": "갓생살기", "설명": "자기계발 열풍을 반영"},
+            {"이름": "스불재", "설명": "스스로 불러온 재앙을 뜻하며 공감대 형성"},
+            {"이름": "킹받네", "설명": "화날 때 쓰는 유머러스한 표현"},
+            {"이름": "당근이세요?", "설명": "중고거래 플랫폼에서 유래"}
+        ],
+        "인물": [
+            {"이름": "뉴진스", "설명": "10대 문화를 선도하는 아이돌 그룹"},
+            {"이름": "아이브", "설명": "세련된 이미지와 음악으로 인기"},
+            {"이름": "손흥민", "설명": "국민적인 스포츠 스타"},
+            {"이름": "임영웅", "설명": "세대를 아우르는 가수"},
+            {"이름": "안유진", "설명": "예능과 음악에서 두각을 나타냄"}
+        ]
+    }
 }
 
-# -----------------------
-# UI
-# -----------------------
-st.title("🔥 요즘 트렌드 추천 웹앱")
+# ---------------------------
+# 예쁜 바 차트 그리기 함수
+# ---------------------------
+def draw_bar_chart(data, title):
+    names = [d["이름"] for d in data]
+    values = list(range(len(data), 0, -1))  # 5,4,3,2,1 랭킹 값
+    
+    colors = plt.cm.Paired(range(len(data)))  # 다양한 색상 팔레트 적용
+    
+    fig, ax = plt.subplots(figsize=(5, 3))  # 크기 작게
+    bars = ax.bar(names, values, color=colors, width=0.6)
+    
+    # 제목 & 라벨
+    ax.set_title(title, fontsize=14, fontweight="bold")
+    ax.set_ylabel("인기 순위", fontsize=10)
+    ax.set_xticks(range(len(names)))
+    ax.set_xticklabels(names, rotation=20, ha="right", fontsize=9)
+    ax.set_yticks(range(1, len(data)+1))
+    ax.set_yticklabels(list(range(5, 0, -1)))  # 1위~5위
+    
+    # 각 막대 위에 순위 표시
+    for bar, rank in zip(bars, range(1, len(data)+1)):
+        ax.text(bar.get_x() + bar.get_width()/2, bar.get_height() + 0.1, f"{rank}위",
+                ha='center', va='bottom', fontsize=9, fontweight="bold")
+    
+    st.pyplot(fig)
 
-st.sidebar.header("사용자 정보 입력")
+# ---------------------------
+# Streamlit UI
+# ---------------------------
+st.set_page_config(page_title="최신 트렌드 TOP5", layout="centered")
 
-age = st.sidebar.selectbox("연령대", ["선택하세요","10대","20대","30대","40대"])
-env = st.sidebar.selectbox("주변환경", ["선택하세요","도시","교외","학교"])
-interest = st.sidebar.selectbox("관심사", ["선택하세요","음악","스포츠","패션","음식","밈","연예인","예능","건강"])
-mood = st.sidebar.selectbox("심정/분위기", ["선택하세요","힙하게","밝게","편안하게","집중하고 싶음"])
+st.title("✨ 나에게 맞는 최신 트렌드 TOP 5 ✨")
 
-# -----------------------
-# 추천 로직
-# -----------------------
-if age != "선택하세요" and env != "선택하세요" and interest != "선택하세요" and mood != "선택하세요":
-    st.subheader(f"✨ {age}, {env}, 관심: {interest}, 분위기: {mood} → 맞춤 트렌드 TOP5")
+# 사용자 입력
+age = st.selectbox("연령대 (선택하세요)", ["선택하세요", "10대", "20대", "30대 이상"])
+interest = st.selectbox("관심 분야 (선택하세요)", ["선택하세요", "패션", "음식", "밈/유행어", "인물"])
 
-    for category, items in trends.items():
-        # 조건과 맞는 데이터 우선 선택
-        filtered = [i for i in items if age in i["age"] and env in i["env"] and interest in i["interest"]]
-
-        # 5개 미만이면 같은 분야에서 채워서 보충
-        if len(filtered) < 5:
-            extra = [i for i in items if i not in filtered]
-            filtered += extra[:5 - len(filtered)]
-
-        # 5개 이상이면 상위 5개만
-        final_items = filtered[:5]
-
-        # 분야 제목 출력
-        st.markdown(f"#### 📌 {category} TOP5")
-
-        # 세로 막대그래프 (Streamlit 기본)
-        st.bar_chart([1]*len(final_items), x=[i["name"] for i in final_items])
-
-        # 설명 출력
-        for i, trend in enumerate(final_items, start=1):
-            st.write(f"**{i}. {trend['name']}** - {trend['desc']}")
-
+if age != "선택하세요" and interest != "선택하세요":
+    if age in trends and interest in trends[age]:
+        data = trends[age][interest][:5]  # 5개만 가져오기
+        st.subheader(f"📌 {age}의 {interest} 트렌드 TOP 5")
+        
+        # 설명 리스트 출력
+        for idx, item in enumerate(data, 1):
+            st.markdown(f"**{idx}위. {item['이름']}** - {item['설명']}")
+        
+        # 그래프 출력
+        draw_bar_chart(data, f"{interest} TOP 5")
+    else:
+        st.warning("해당 조건에 맞는 트렌드 데이터가 부족합니다.")
 else:
-    st.info("👆 왼쪽 사이드바에서 모든 정보를 입력하세요!")
+    st.info("연령대와 관심 분야를 모두 선택하세요.")
